@@ -8,9 +8,16 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(cors());
 
-app.use("/", () => {
-    console.log("Hello from the API");
-}
-);
+
+import AlumniRouter from "./routes/alumini.routes.js";
+
+app.use("/api/v1/", AlumniRouter);
+
+
+
+// app.use("/", () => {
+//     console.log("Hello from the API");
+// }
+// );
 
 export { app };

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const aluminiSchema = new mongoose.Schema({
+const alumniSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -16,10 +16,9 @@ const aluminiSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        default: "alumini"
+        default: "alumni"
     }
 },{ timestamps: true })
 
-const Alumini = mongoose.model("alumini", aluminiSchema);
-
-module.exports = Alumini;
+export const Alumni = mongoose.model("alumni", alumniSchema);
+// module.exports = Alumni;
