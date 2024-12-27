@@ -1,7 +1,32 @@
 import mongoose from "mongoose";
 
 const studentSchema = new mongoose.Schema({
-    name: {
+    fullname: {
+        type: String,
+        required: true
+    },
+    fathername: {
+        type: String,
+        required: true
+    },
+    cnic: {
+        type: Number,
+        required: true,
+        unique: true
+    },
+    dateOfBirth: {
+        type: String,
+        required: true
+    },
+    rollno: {
+        type: String,
+        required: true
+    },
+    address: {
+        type: String,
+        required: true
+    },
+    phoneNumber: {
         type: String,
         required: true
     },
@@ -14,12 +39,12 @@ const studentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    role:{
+    role: {
         type: String,
         default: "student"
     }
-},{timestamps:true})
+}, { timestamps: true })
 
-const Student = mongoose.model("student",studentSchema)
+const Student = mongoose.model("student", studentSchema)
 
 module.exports = Student
