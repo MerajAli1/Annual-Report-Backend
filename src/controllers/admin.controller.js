@@ -63,7 +63,6 @@ const handleAdminHomePage = async (req, res) => {
         const token = authHeader.split(" ")[1];
         const verify = jwt.verify(token, process.env.JWT_SECRET);
         const { _id, department } = verify;
-
         const alumni = await Alumni.find({ department: department });
         const students = await Student.find({ department: department });
         res.json({ alumni, students });
@@ -71,8 +70,30 @@ const handleAdminHomePage = async (req, res) => {
         res.json({ err: error.message });
     }
 }
+
+const deleteAlumni = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const alumni = await Alumni.findByIdAndDelete(id);
+        res.json({ msg: "Alumni successfully deleted", alumni });
+    } catch (error) {
+        res.json({ err: error.message });
+    }
+}
+
+const deleteStudent = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const student = await Student.findByIdAndDelete(id);
+        res.json({ msg: "Student successfully deleted", student });
+    } catch (error) {
+        res.json({ err: error.message });
+    }
+}
 export {
     handleAdminSignUp,
     handleAdminLogin,
-    handleAdminHomePage
+    handleAdminHomePage,
+    deleteAlumni,
+    deleteStudent
 }
