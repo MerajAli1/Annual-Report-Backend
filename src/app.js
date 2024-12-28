@@ -10,8 +10,10 @@ app.use(cors());
 
 
 import AlumniRouter from "./routes/alumini.routes.js";
+import AdminRouter from "./routes/admin.routes.js";
 
 app.use("/api/v1/", AlumniRouter);
+app.use("/api/v1/", AdminRouter);
 
 
 

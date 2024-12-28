@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const adminSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        // required: true
     },
     email: {
         type: String,
@@ -14,12 +14,15 @@ const adminSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    department: {
+        type: String,
+        required: true
+    },
     role: {
         type: String,
         default: "admin"
     }
 }, { timestamps: true })
 
-const Admin = mongoose.model("admin", adminSchema)
+export const Admin = mongoose.model("admin", adminSchema)
 
-module.exports = Admin
