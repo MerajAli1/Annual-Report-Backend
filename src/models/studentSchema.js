@@ -39,12 +39,15 @@ const studentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    department: {
+        type: String,
+        required: true
+    },
     role: {
         type: String,
         default: "student"
     }
 }, { timestamps: true })
 
-const Student = mongoose.model("student", studentSchema)
+export const Student = mongoose.model("student", studentSchema)
 
-module.exports = Student

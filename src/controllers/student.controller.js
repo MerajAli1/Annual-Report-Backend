@@ -1,9 +1,9 @@
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
-import { Alumni } from "../models/alumniSchema.js"
-const handleAlumniSignup = async (req, res) => {
+import { Student } from "../models/studentSchema.js"
+const handleStudentSignup = async (req, res) => {
     try {
-        const { fullname, fathername, cnic, dateOfBirth, rollno, address, password, phoneNumber, email ,department} = req.body;
+        const { fullname, fathername, cnic, dateOfBirth, rollno, address, password, phoneNumber, email, department } = req.body;
         if (!fullname,
             !email,
             !password,
@@ -20,7 +20,7 @@ const handleAlumniSignup = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const alumniUser = await Alumni.create({
+        const studentUser = await Student.create({
             fullname: fullname,
             fathername: fathername,
             cnic: cnic,
@@ -33,9 +33,9 @@ const handleAlumniSignup = async (req, res) => {
             department: department
         })
 
-        const { _id } = alumniUser
+        const { _id } = studentUser
 
-        if (alumniUser) {
+        if (studentUser) {
             const token = jwt.sign({ _id, fullname }, process.env.JWT_SECRET, {
                 expiresIn: "30d",
             });
@@ -47,5 +47,5 @@ const handleAlumniSignup = async (req, res) => {
 }
 
 export {
-    handleAlumniSignup
+    handleStudentSignup
 }

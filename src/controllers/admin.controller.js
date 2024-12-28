@@ -1,6 +1,8 @@
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import { Admin } from "../models/adminSchema.js"
+import { Alumni } from "../models/alumniSchema.js";
+import { Student } from "../models/studentSchema.js";
 
 const handleAdminSignUp = async (req, res) => {
     try {
@@ -54,7 +56,23 @@ const handleAdminLogin = async (req, res) => {
         res.json({ err: error.message });
     }
 }
+
+const handleAdminHomePage = async (req, res) => {
+    try {
+        const authHeader = req.headers.authorization;
+        const token = authHeader.split(" ")[1];
+        const verify = jwt.verify(token, process.env.JWT_SECRET);
+        const { _id, department } = verify;
+
+        const alumni = await Alumni.find({ department: department });
+        const students = await Student.find({ department: department });
+        res.json({ alumni, students });
+    } catch (error) {
+        res.json({ err: error.message });
+    }
+}
 export {
     handleAdminSignUp,
-    handleAdminLogin
+    handleAdminLogin,
+    handleAdminHomePage
 }
