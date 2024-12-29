@@ -7,8 +7,8 @@ import { Student } from "../models/studentSchema.js";
 const handleAdminSignUp = async (req, res) => {
     try {
         const { department, email, password } = req.body;
-        if (!email, !password, !department) {
-            return res.json({ status: "Failed", msg: "All fields are required" })
+        if (!email || !password || !department) {
+            return res.json({ status: "Failed", msg: "All fields are required" });
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -20,13 +20,14 @@ const handleAdminSignUp = async (req, res) => {
             department: department,
         });
 
-
         if (adminUser) {
-            const { _id, department } = adminUser
+            const { _id, department } = adminUser;
             const token = jwt.sign({ _id, department, email }, process.env.JWT_SECRET, {
                 expiresIn: "30d",
             });
             return res.json({ msg: "successfully sign up", token: token });
+        } else {
+            return res.json({ status: "Failed", msg: "Admin user creation failed" });
         }
     } catch (error) {
         res.json({ err: error.message });
@@ -75,6 +76,9 @@ const deleteAlumni = async (req, res) => {
     try {
         const { id } = req.params;
         const alumni = await Alumni.findByIdAndDelete(id);
+        if (!alumni) {
+            return res.status(404).json({ msg: "Alumni not found" });
+        }
         res.json({ msg: "Alumni successfully deleted", alumni });
     } catch (error) {
         res.json({ err: error.message });
@@ -85,15 +89,47 @@ const deleteStudent = async (req, res) => {
     try {
         const { id } = req.params;
         const student = await Student.findByIdAndDelete(id);
+        if (!student) {
+            return res.status(404).json({ msg: "Student not found" });
+        }
         res.json({ msg: "Student successfully deleted", student });
     } catch (error) {
         res.json({ err: error.message });
     }
+}
+
+const updateAlumni = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const alumni = await Alumni.findByIdAndUpdate(id, req.body, { new: true });
+        if (!alumni) {
+            return res.status(404).json({ msg: "Alumni not found" });
+        }
+        res.json({ msg: "Alumni successfully updated", alumni });
+    } catch (error) {
+        res.status(500).json({ err: error.message });
+    }
+}
+
+const updateStudent = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const student = await Student.findByIdAndUpdate(id, req.body, { new: true });
+        if (!student) {
+            return res.status(404).json({ msg: "Student not found" });
+        }
+        res.json({ msg: "Student successfully updated", student });
+    } catch (error) {
+        res.status(500).json({ err: error.message });
+    }
+
 }
 export {
     handleAdminSignUp,
     handleAdminLogin,
     handleAdminHomePage,
     deleteAlumni,
-    deleteStudent
+    deleteStudent,
+    updateAlumni,
+    updateStudent
 }
