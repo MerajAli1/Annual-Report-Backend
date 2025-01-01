@@ -12,11 +12,15 @@ app.use(cors());
 import AlumniRouter from "./routes/alumini.routes.js";
 import StudentRouter from "./routes/student.routes.js";
 import AdminRouter from "./routes/admin.routes.js";
+import AllEmailRouter from "./routes/allEmail.routes.js";
 import Auth from "./middlewares/authentication.js";
+
+app.use("/admin", Auth, AdminRouter);
 app.use("/api/v1/", AlumniRouter);
 app.use("/api/v1/", StudentRouter);
-app.use("/api/v1/",Auth, AdminRouter);
+app.use("/api/v1/", AllEmailRouter);
 app.use("/api/user/", AdminRouter);
+app.use("/api/user/", StudentRouter);
 
 
 // app.use("/", () => {
