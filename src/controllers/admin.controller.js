@@ -30,7 +30,7 @@ const handleAdminSignUp = async (req, res) => {
             return res.json({ status: "Failed", msg: "Admin user creation failed" });
         }
     } catch (error) {
-        res.json({ err: error.message });
+        res.json({status:"Failed", err: error.message });
     }
 }
 
