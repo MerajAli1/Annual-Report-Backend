@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
     department: { type: String, required: true },
     password: { type: String, required: true },
     otp: { type: String },
-    role: { type: String },
+    role: { type: String, enum: ["Teacher", "Student"] },
     verification: { type: Boolean, default: false }
 }, { timestamps: true });
 

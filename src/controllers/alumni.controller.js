@@ -116,38 +116,38 @@ const alumniSignup = async (req, res) => {
 };
 
 // Login controller
-const alumniLogin = async (req, res) => {
-    const { email, password, otp } = req.body;
+// const alumniLogin = async (req, res) => {
+//     const { email, password, otp } = req.body;
 
-    try {
-        // Check if email exists in the Alumni collection
-        const existingAlumni = await Alumni.findOne({ email });
-        if (!existingAlumni) {
-            return res.status(400).json({ message: "Invalid credentials" });
-        }
+//     try {
+//         // Check if email exists in the Alumni collection
+//         const existingAlumni = await Alumni.findOne({ email });
+//         if (!existingAlumni) {
+//             return res.status(400).json({ message: "Invalid credentials" });
+//         }
 
-        // Check if OTP matches
-        if (existingAlumni.otp !== otp) {
-            return res.status(400).json({ message: "Invalid OTP" });
-        }
+//         // Check if OTP matches
+//         if (existingAlumni.otp !== otp) {
+//             return res.status(400).json({ message: "Invalid OTP" });
+//         }
 
-        // Check if password matches
-        const isPasswordCorrect = await bcrypt.compare(password, existingAlumni.password);
-        if (!isPasswordCorrect) {
-            return res.status(400).json({ message: "Invalid credentials" });
-        }
+//         // Check if password matches
+//         const isPasswordCorrect = await bcrypt.compare(password, existingAlumni.password);
+//         if (!isPasswordCorrect) {
+//             return res.status(400).json({ message: "Invalid credentials" });
+//         }
 
-        // Generate JWT token
-        const token = jwt.sign({ email: existingAlumni.email, id: existingAlumni._id }, 'secret', { expiresIn: "1h" });
+//         // Generate JWT token
+//         const token = jwt.sign({ email: existingAlumni.email, id: existingAlumni._id }, 'secret', { expiresIn: "1h" });
 
-        res.status(200).json({ result: existingAlumni, token });
-    } catch (error) {
-        res.status(500).json({ message: "Something went wrong" });
-    }
-};
+//         res.status(200).json({ result: existingAlumni, token });
+//     } catch (error) {
+//         res.status(500).json({ message: "Something went wrong" });
+//     }
+// };
 
 export {
     handleAlumniData,
     alumniSignup,
-    alumniLogin
+    // alumniLogin
 }

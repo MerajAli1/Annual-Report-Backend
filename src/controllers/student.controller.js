@@ -38,16 +38,28 @@ const sendOTPEmail = async (email, otp) => {
 
 // Signup controller
 const studentSignup = async (req, res) => {
-    const { email, department, password } = req.body;
+    const { email, department, password, role } = req.body;
     try {
         // Check if email exists in the AllEmail collection
         const emailExists = await AllEmail.findOne({ email });
         if (!emailExists) {
-            return res.status(400).json({ message: "Email not found in our database" });
+            return res.status(200).json({ message: "Email not found in our database" });
         }
+
         // Check if user already exists in the User collection
         const existingUser = await User.findOne({ email });
         if (existingUser) {
+            // Check if password matches
+            const isPasswordCorrect = await bcrypt.compare(password, existingUser.password);
+            if (!isPasswordCorrect) {
+                return res.status(200).json({ message: "Password not Matched" });
+            }
+            if (existingUser.department !== department) {
+                return res.status(200).json({ message: "Department is not matched" });
+            }
+            if (existingUser.role !== role) {
+                return res.status(200).json({ message: "Role is not matched" });
+            }
             if (!existingUser.verification) {
                 // Regenerate OTP and update in the database
                 const otp = generateOTP();
@@ -56,16 +68,19 @@ const studentSignup = async (req, res) => {
                 await existingUser.save();
                 return res.status(200).json({ message: "OTP regenerated and sent to email. Please verify your email." });
             } else {
-                return res.status(400).json({ message: "User already exists and is verified." });
+                return res.status(200).json({ message: "User already exists and is verified.", existingUser });
             }
         }
+
         // Generate OTP and send to email
         const otp = generateOTP();
         await sendOTPEmail(email, otp);
+
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 12);
+
         // Save the student with hashed password and department
-        const newUser = new User({ email, department, password: hashedPassword, otp, verification: false });
+        const newUser = new User({ email, department, password: hashedPassword, otp, verification: false, role });
         await newUser.save();
         res.status(200).json({ message: "Signup successful, OTP sent to email" });
     } catch (error) {
@@ -90,17 +105,17 @@ const verifyOTP = async (req, res) => {
             return res.status(400).json({ message: "Invalid OTP" });
         }
         // Generate JWT token
-        const token = jwt.sign({ email: existingStudent.email, id: existingStudent._id },
+        const token = jwt.sign({ email: existingStudent.email, id: existingStudent._id, role: existingStudent.role },
             process.env.JWT_SECRET, { expiresIn: "30d" });
         if (token) {
             existingStudent.verification = true;
             await existingStudent.save();
         }
-        res.status(200).json({ message: "OTP verified successfully", token: token });
+        res.status(200).json({ message: "OTP verified successfully", token: token, role: existingStudent.role });
 
 
     } catch (error) {
-        res.status(500).json({ message: "Something went wrong" });
+        res.status(500).json({ status: "Failed", message: "Something went wrong" });
     }
 }
 
